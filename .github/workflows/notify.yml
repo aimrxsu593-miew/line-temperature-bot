@@ -1,1 +1,37 @@
+name: LINE Temperature Reminder
 
+on:
+  schedule:
+    - cron: '0 1 * * *'
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine session
+        id: session
+        run: |
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" = "01" ]; then
+            echo "session=morning" >> $GITHUB_OUTPUT
+          else
+            echo "session=afternoon" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send notification
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+          LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
+        run: python notify.py ${{ steps.session.outputs.session }}
