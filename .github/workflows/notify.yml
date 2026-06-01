@@ -1,8 +1,8 @@
 name: LINE Temperature Reminder
 on:
   schedule:
-    - cron: '0 1 * * *'
-    - cron: '0 7 * * *'
+    - cron: '3 1 * * *'   # ประมาณ 08:03 เวลาไทย
+    - cron: '7 7 * * *'   # ประมาณ 14:07 เวลาไทย
   workflow_dispatch:
 jobs:
   notify:
@@ -18,8 +18,8 @@ jobs:
       - name: Determine session
         id: session
         run: |
-          HOUR=$(date -u +%H)
-          if [ "$HOUR" = "01" ]; then
+          HOUR_TH=$(TZ='Asia/Bangkok' date +%H)
+          if [ "$HOUR_TH" = "08" ]; then
             echo "session=morning" >> $GITHUB_OUTPUT
           else
             echo "session=afternoon" >> $GITHUB_OUTPUT
