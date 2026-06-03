@@ -1,16 +1,16 @@
 name: LINE Temperature Reminder
 on:
   schedule:
-    - cron: '3 1 * * *'   # ประมาณ 08:03 เวลาไทย
-    - cron: '7 7 * * *'   # ประมาณ 14:07 เวลาไทย
+    - cron: '3 1 * * *'
+    - cron: '7 7 * * *'
   workflow_dispatch:
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
@@ -24,7 +24,7 @@ jobs:
           else
             echo "session=afternoon" >> $GITHUB_OUTPUT
           fi
-     - name: Send notification
+      - name: Send notification
         env:
           LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
           LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
