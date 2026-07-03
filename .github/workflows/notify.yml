@@ -1,8 +1,7 @@
 name: LINE Temperature Reminder
 on:
   schedule:
-    - cron: '3 1 * * *'
-    - cron: '7 7 * * *'
+    - cron: '3 1 * * 6'
   workflow_dispatch:
 jobs:
   notify:
@@ -15,18 +14,8 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Determine session
-        id: session
-        run: |
-          HOUR_TH=$(TZ='Asia/Bangkok' date +%H)
-          if [ "$HOUR_TH" = "08" ]; then
-            echo "session=morning" >> $GITHUB_OUTPUT
-          else
-            echo "session=afternoon" >> $GITHUB_OUTPUT
-          fi
       - name: Send notification
         env:
           LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
           LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-        run: python notify.py ${{ steps.session.outputs.session }}
+        run: python notify.py
